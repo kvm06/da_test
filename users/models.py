@@ -11,7 +11,7 @@ GENDER = [
 
 class CustomUserManager(BaseUserManager):
     
-    def create_user(self, first_name, last_name, gender, email, password=None):
+    def create_user(self, first_name, last_name, gender, email, user_picture, password=None):
         """Создает нового пользователя приложения с сохранением данных об email, имени, фамилии и поле"""
         if not email:
             raise ValueError('Users must have an email address')
@@ -21,6 +21,7 @@ class CustomUserManager(BaseUserManager):
             first_name=first_name,
             last_name=last_name,
             gender=gender,
+            user_picture=user_picture,
         )
 
         user.set_password(password)
@@ -44,14 +45,14 @@ class CustomUserManager(BaseUserManager):
 
 class CustomUser(AbstractBaseUser):
 
-    first_name = models.CharField(verbose_name="First name", max_length=50)
-    last_name = models.CharField(verbose_name="Last name",  max_length=50)
-    user_picture = models.ImageField(verbose_name = "User picture", upload_to='user_pictures')
-    gender = models.CharField (verbose_name="Gender", max_length=8, choices=GENDER) 
+    first_name = models.CharField(verbose_name="Имя", max_length=50)
+    last_name = models.CharField(verbose_name="Фамилия",  max_length=50)
+    user_picture = models.ImageField(verbose_name = "Загрузить фото", upload_to='user_pictures')
+    gender = models.CharField (verbose_name="Пол", max_length=8, choices=GENDER) 
     email = models.EmailField(verbose_name="Email", max_length=255, unique=True)
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
-    
+
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['first_name', 'last_name', 'gender']
     

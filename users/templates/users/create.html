@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block title %} Create new account {% endblock %}
+
+{% block content %}
+    <div>
+        {% if not form.is_valid %}
+        <div>
+            <h1>Регистрация</h1>
+            <div>
+                <p>Введите следующую информацию для создания аккаунта</p>
+                <form method="POST" enctype="multipart/form-data" >
+                    {% csrf_token %}
+                    <p>{{ form.as_p}}</p>
+                    <button type="submit" name="button">Создать аккаунт</button>
+                </form>
+            </div>
+        </div>
+        {% else %}
+        <div>
+            <h1>Ваш аккаунт успешно создан </h1>
+            <div>
+                <p>Вернуться на <a href="{% url 'index' %}">главную</a> страницу</p>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+{% endblock %}
