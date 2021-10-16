@@ -1,17 +1,18 @@
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
-
-
+from django.core.files.uploadedfile import InMemoryUploadedFile
+from .watermark import Watermark
+from PIL import Image
+from datingapp.settings import BASE_DIR
 GENDER = [
         ('man', 'Мужской'),
         ('woman', 'Женский'),
     ]
 
-
 class CustomUserManager(BaseUserManager):
     
-    def create_user(self, first_name, last_name, gender, email, user_picture, password=None):
+    def create_user(self, first_name, last_name, gender, email, password=None):
         """Создает нового пользователя приложения с сохранением данных об email, имени, фамилии и поле"""
         if not email:
             raise ValueError('Users must have an email address')
@@ -21,7 +22,6 @@ class CustomUserManager(BaseUserManager):
             first_name=first_name,
             last_name=last_name,
             gender=gender,
-            user_picture=user_picture,
         )
 
         user.set_password(password)
@@ -42,12 +42,11 @@ class CustomUserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-
 class CustomUser(AbstractBaseUser):
 
     first_name = models.CharField(verbose_name="Имя", max_length=50)
     last_name = models.CharField(verbose_name="Фамилия",  max_length=50)
-    user_picture = models.ImageField(verbose_name = "Загрузить фото", upload_to='user_pictures')
+    user_picture = models.ImageField(verbose_name = "Загрузить фото", upload_to='user_pictures',  null=True, blank=True)
     gender = models.CharField (verbose_name="Пол", max_length=8, choices=GENDER) 
     email = models.EmailField(verbose_name="Email", max_length=255, unique=True)
     is_active = models.BooleanField(default=True)
@@ -70,3 +69,15 @@ class CustomUser(AbstractBaseUser):
     @property
     def is_staff(self):
         return self.is_admin
+
+    def save(self, *args, **kwargs):
+        """Переопределяет метод save() для добавления водяного знака к изображению"""
+        if self.user_picture:
+            uploaded_img = Image.open(self.user_picture)
+            watermark_path = 'users/static/users/images/watermark.png'
+            watermark_open = Image.open(watermark_path, 'r')
+
+            uploaded_img = Watermark.add_watermark(uploaded_img, watermark_open)
+            uploaded_img.save('C:/Users/koloe/Desktop/datingapp/datingapp/media/user_pictures/' + self.user_picture.name.split('/')[-1])
+
+        super(CustomUser,self).save()

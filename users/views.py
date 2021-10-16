@@ -1,3 +1,4 @@
+from os import add_dll_directory
 from django.contrib import auth
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User, Group
@@ -6,12 +7,12 @@ from django.contrib.auth.forms import AuthenticationForm
 from .forms import SignUpForm
 from .models import CustomUser
 
-
 # Create your views here.
 def index(request):
     return render(request, 'users/index.html')
 
 def create(request):
+    """Создание нового пользователя приложения"""
     if request.method == 'POST':
         form = SignUpForm(request.POST, request.FILES)
         if form.is_valid():
@@ -45,3 +46,11 @@ def log_in(request):
 def log_out(request):
     logout(request)
     return redirect('index')
+
+def user_profile(request, user_id):
+    """Профиль отдельного пользователя"""
+    try:
+        user = CustomUser.objects.get(id=user_id)
+    except Exception as e:
+        raise e
+    return render(request, "users/profile.html", {'user': user})

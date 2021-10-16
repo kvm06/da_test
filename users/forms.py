@@ -6,7 +6,7 @@ from django import forms
 
 class SignUpForm(UserCreationForm):
 
-    user_picture = forms.ImageField()
     class Meta:
         model = CustomUser
-        fields = ('first_name', 'last_name', 'email', 'gender')
+        fields = ('first_name', 'last_name', 'email', 'gender', 'user_picture')
+

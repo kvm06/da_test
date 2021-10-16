@@ -6,7 +6,7 @@
         <h1>Главная</h1>
         {% if request.user.is_authenticated %}
         <p>Добро пожаловать, {{ request.user.first_name }} {{request.user.last_name}}! </p>
-        <a class='reg_menu reg_menu_item' href="{% url 'logout' %}">Выйти</a>
+        <a href="{% url 'logout' %}">Выйти</a>
         {% endif %}
     </div>
 {% endblock %}
