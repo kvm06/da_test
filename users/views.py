@@ -1,11 +1,15 @@
 from os import add_dll_directory
 from django.contrib import auth
+from django.core.mail import send_mail
+from django.core.mail.message import EmailMessage
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User, Group
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.forms import AuthenticationForm
+
 from .forms import SignUpForm
-from .models import CustomUser
+from .models import CustomUser, Matches
+from .emailsender import EmailSender
 
 # Create your views here.
 def index(request):
@@ -54,3 +58,19 @@ def user_profile(request, user_id):
     except Exception as e:
         raise e
     return render(request, "users/profile.html", {'user': user})
+
+def match(request, user_id):
+    """Вызывается если один участник поставил лайк другому"""
+    current_user = CustomUser.objects.get(id=request.user.id)
+    liked_user = CustomUser.objects.get(id=user_id)
+
+    #Проверяем есть ли в базе уже информация
+    if not Matches.objects.filter(first_user=current_user, second_user=liked_user):
+        Matches.objects.create(first_user=current_user, second_user=liked_user)
+
+    #Проверяем есть ли взаимная симпатия у участников
+    if Matches.objects.filter(first_user=liked_user, second_user=current_user):
+        EmailSender.send_emails_to_users(current_user, liked_user)
+        EmailSender.send_emails_to_users(liked_user, current_user)
+
+    return redirect('index')

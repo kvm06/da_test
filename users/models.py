@@ -2,6 +2,8 @@ from django.contrib.auth.base_user import AbstractBaseUser
 from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.core.files.uploadedfile import InMemoryUploadedFile
+from django.db.models.deletion import CASCADE
+from django.db.models.expressions import Case
 from .watermark import Watermark
 from PIL import Image
 from datingapp.settings import BASE_DIR
@@ -51,10 +53,8 @@ class CustomUser(AbstractBaseUser):
     email = models.EmailField(verbose_name="Email", max_length=255, unique=True)
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
-
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['first_name', 'last_name', 'gender']
-    
     objects = CustomUserManager()
 
     def __str__(self):
@@ -81,3 +81,8 @@ class CustomUser(AbstractBaseUser):
             uploaded_img.save('C:/Users/koloe/Desktop/datingapp/datingapp/media/user_pictures/' + self.user_picture.name.split('/')[-1])
 
         super(CustomUser,self).save()
+
+class Matches(models.Model):
+
+    first_user = models.ForeignKey(CustomUser, on_delete=CASCADE, related_name='first_user')
+    second_user = models.ForeignKey(CustomUser, on_delete=CASCADE, related_name='second_user')
