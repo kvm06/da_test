@@ -1,19 +1,23 @@
 from os import add_dll_directory
 from django.contrib import auth
+from django.core.exceptions import ObjectDoesNotExist
 from django.core.mail import send_mail
 from django.core.mail.message import EmailMessage
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User, Group
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.forms import AuthenticationForm
+import users
 from .forms import SignUpForm
-from .models import CustomUser, Matches
+from .models import CustomUser, Matches, UserCoords
 from .emailsender import EmailSender
 from .filters import UserFilter
 
 # Create your views here.
 def index(request):
-    return render(request, 'users/index.html')
+
+    
+    return render(request, "users/index.html", {"ip":1})
 
 def create(request):
     """Создание нового пользователя приложения"""
@@ -24,6 +28,8 @@ def create(request):
             email = form.cleaned_data.get('email')
             password = form.cleaned_data.get('password1')
             new_user = authenticate(email=email, password=password)
+            lat, lng = distance.get_coords_by_request(request)
+            UserCoords.objects.create(user=new_user, lat=lat, lng=lng)
             login(request, new_user)
     else:
         form = SignUpForm()
@@ -76,5 +82,5 @@ def match(request, user_id):
     return redirect('index')
 
 def users_list(request):
-    filter = UserFilter(request.GET, queryset=CustomUser.objects.filter(is_admin=False))
+    filter = UserFilter( request.GET, queryset=CustomUser.objects.filter(is_admin=False), request=request)
     return render(request, 'users/list.html', {'filter': filter})

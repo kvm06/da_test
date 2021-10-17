@@ -38,7 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django_filters'
+    'django_filters',
+    'geoip2'
 ]
 
 MIDDLEWARE = [
@@ -141,3 +142,5 @@ EMAIL_PORT = '1025'
 EMAIL_HOST_USER = ''
 EMAIL_HOST_PASSWORD = ''
 EMAIL_USE_TSL = False
+
+GEOIP_PATH = os.path.join(BASE_DIR, 'geoip')

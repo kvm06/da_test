@@ -2,6 +2,7 @@
 {% block title %} Главная {% endblock %}
 
 {% block content %}
+<h1>IP = {{ip}}</h1>
     <div>
         <h1>Главная</h1>
         {% if request.user.is_authenticated %}
@@ -10,19 +11,4 @@
         <a href="{% url 'logout' %}">Выйти</a>
         {% endif %}
     </div>
-
-    <div class="cont" style="display:flex; flex-wrap:wrap">
-        <div class="div2" style="width:200px; height: 200px;border:1px solid red;">
-        
-        </div>
-        <div class="div2" style="width:200px; height: 200px;border:1px solid red;">
-            
-        </div>
-    
-        <div class="div2" style="width:200px; height: 200px; border:1px solid red;">
-            
-        </div>
-    </div>
-   
-
 {% endblock %}

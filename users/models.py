@@ -7,13 +7,15 @@ from django.db.models.expressions import Case
 from .watermark import Watermark
 from PIL import Image
 from datingapp.settings import BASE_DIR
+from .distance import get_distance_by_coords
+
 GENDER = [
         ('man', 'Мужской'),
         ('woman', 'Женский'),
     ]
 
+
 class CustomUserManager(BaseUserManager):
-    
     def create_user(self, first_name, last_name, gender, email, password=None):
         """Создает нового пользователя приложения с сохранением данных об email, имени, фамилии и поле"""
         if not email:
@@ -45,7 +47,6 @@ class CustomUserManager(BaseUserManager):
         return user
 
 class CustomUser(AbstractBaseUser):
-
     first_name = models.CharField(verbose_name="Имя", max_length=50)
     last_name = models.CharField(verbose_name="Фамилия",  max_length=50)
     user_picture = models.ImageField(verbose_name = "Загрузить фото", upload_to='user_pictures',  null=True, blank=True)
@@ -56,7 +57,7 @@ class CustomUser(AbstractBaseUser):
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['first_name', 'last_name', 'gender']
     objects = CustomUserManager()
-
+    
     def __str__(self):
         return self.email
 
@@ -69,20 +70,23 @@ class CustomUser(AbstractBaseUser):
     @property
     def is_staff(self):
         return self.is_admin
-
-    def save(self, *args, **kwargs):
+    
+    def save(self, *args, **kwargs):    
         """Переопределяет метод save() для добавления водяного знака к изображению"""
         if self.user_picture:
             uploaded_img = Image.open(self.user_picture)
             watermark_path = 'users/static/users/images/watermark.png'
             watermark_open = Image.open(watermark_path, 'r')
-
             uploaded_img = Watermark.add_watermark(uploaded_img, watermark_open)
             uploaded_img.save('C:/Users/koloe/Desktop/datingapp/datingapp/media/user_pictures/' + self.user_picture.name.split('/')[-1])
 
         super(CustomUser,self).save()
 
 class Matches(models.Model):
-
     first_user = models.ForeignKey(CustomUser, on_delete=CASCADE, related_name='first_user')
     second_user = models.ForeignKey(CustomUser, on_delete=CASCADE, related_name='second_user')
+
+class UserCoords(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=CASCADE, related_name='user')
+    lat = models.FloatField(verbose_name="Широта", null=True)
+    lng = models.FloatField(verbose_name="Долгота", null=True)
