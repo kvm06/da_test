@@ -6,10 +6,10 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.models import User, Group
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.forms import AuthenticationForm
-
 from .forms import SignUpForm
 from .models import CustomUser, Matches
 from .emailsender import EmailSender
+from .filters import UserFilter
 
 # Create your views here.
 def index(request):
@@ -74,3 +74,7 @@ def match(request, user_id):
         EmailSender.send_emails_to_users(liked_user, current_user)
 
     return redirect('index')
+
+def users_list(request):
+    filter = UserFilter(request.GET, queryset=CustomUser.objects.filter(is_admin=False))
+    return render(request, 'users/list.html', {'filter': filter})
