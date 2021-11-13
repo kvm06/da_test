@@ -1,4 +1,4 @@
-from .models import CustomUser
+from users.models import CustomUser
 from django.core.mail import send_mail, EmailMessage
 
 

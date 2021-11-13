@@ -1,7 +1,5 @@
-from PIL import Image, ImageDraw, ImageFont, ImageEnhance
-import os, sys
+from PIL import Image
 from io import BytesIO
-
 from django.core.files.uploadedfile import InMemoryUploadedFile
 
 

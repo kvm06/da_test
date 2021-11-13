@@ -40,6 +40,8 @@ class CustomUserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
+    def from_moscow(self):
+        return
 
 class CustomUser(AbstractBaseUser):
     first_name = models.CharField(verbose_name="Имя", max_length=50)

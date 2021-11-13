@@ -1,6 +1,6 @@
 from django.contrib.auth.forms import UserCreationForm
 from .models import CustomUser
-from .watermark import add_watermark
+from users.services.watermark import add_watermark
 from datingapp.settings import BASE_DIR
 
 

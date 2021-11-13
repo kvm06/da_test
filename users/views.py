@@ -1,18 +1,11 @@
-from os import add_dll_directory
-from django.contrib import auth
-from django.core.exceptions import ObjectDoesNotExist
-from django.core.mail import send_mail
-from django.core.mail.message import EmailMessage
 from django.shortcuts import render, redirect
-from django.contrib.auth.models import User, Group
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.forms import AuthenticationForm
-import users
 from .forms import SignUpForm
 from .models import CustomUser, Matches
-from .emailsender import EmailSender
-from .filters import UserFilter
-from . import distance
+from users.services.emailsender import EmailSender
+from users.services.filters import UserFilter
+from users.services.distance import get_coords
 
 
 # Create your views here.
@@ -25,7 +18,9 @@ def create(request):
     if request.method == 'POST':
         form = SignUpForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save()
+            user = form.save(commit=False)
+            user.lat, user.lng = get_coords(request)
+            user.save()
             email = form.cleaned_data.get('email')
             password = form.cleaned_data.get('password1')
             new_user = authenticate(email=email, password=password)
