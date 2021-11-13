@@ -2,11 +2,11 @@
 {% block title %} Авторизация {% endblock %}
 
 {% block content %}
-    <div>
-        <form method="POST">
-            {% csrf_token %}
-            <p>{{ form }}</p>
-            <button type="submit">Войти</button>
-        </form>
-    </div>
+<div>
+    <form method="POST">
+        {% csrf_token %}
+        <p>{{ form }}</p>
+        <button type="submit">Войти</button>
+    </form>
+</div>
 {% endblock %}

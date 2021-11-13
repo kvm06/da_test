@@ -1,18 +1,24 @@
 from PIL import Image, ImageDraw, ImageFont, ImageEnhance
 import os, sys
+from io import BytesIO
+
+from django.core.files.uploadedfile import InMemoryUploadedFile
 
 
-class Watermark:
+def add_watermark(user_picture: InMemoryUploadedFile, watermark_path: str) -> InMemoryUploadedFile:
+    image = Image.open(user_picture).convert('RGB')
+    watermark = Image.open(watermark_path)
 
-    def add_watermark(image, watermark, opacity=0.5):
-        """Метод добавляет водяной знак на картинку"""
+    # resize too big pictures
+    if image.width > 512:
+        image = image.resize((512, 512 * image.height // image.width))
 
-        watermark = watermark.convert('RGBA')
-        alpha = watermark.split()[3]
-        alpha = ImageEnhance.Brightness(alpha).enhance(opacity)
-        watermark.putalpha(alpha)
+    im_height, wm_height = image.size[1], watermark.size[1]
+    image.paste(watermark, (0, im_height - wm_height), mask=watermark)
+    output = BytesIO()
+    image.save(output, format='JPEG', quality=95)
+    image.close()
+    watermark.close()
+    output.seek(0)
 
-        layer = Image.new('RGBA', image.size, (0,0,0,0))
-        layer.paste(watermark, (0, image.size[1]//2))
-
-        return Image.composite(layer, image, layer)
+    return InMemoryUploadedFile(output, None, user_picture.name, 'image/jpeg', None, None)

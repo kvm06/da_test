@@ -1,0 +1,12 @@
+* {
+    margin: 0px;
+    padding: 0px;
+}
+.row {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+}
+.profile_info {
+    width: 15%;
+}

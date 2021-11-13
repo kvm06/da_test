@@ -2,12 +2,12 @@
 {% block title %} Главная {% endblock %}
 
 {% block content %}
-    <div>
-        <h1>Главная</h1>
-        {% if request.user.is_authenticated %}
-        <p>Добро пожаловать, {{ request.user.first_name }} {{request.user.last_name}}! </p>
-        <a href="{% url 'user_profile' request.user.id %}">Мой профиль</a>
-        <a href="{% url 'logout' %}">Выйти</a>
-        {% endif %}
-    </div>
+<div>
+    <h1>Главная</h1>
+    {% if request.user.is_authenticated %}
+    <p>Добро пожаловать, {{ request.user.first_name }} {{request.user.last_name}}! </p>
+    <a href="{% url 'user_profile' request.user.id %}">Мой профиль</a>
+    <a href="{% url 'logout' %}">Выйти</a>
+    {% endif %}
+</div>
 {% endblock %}
