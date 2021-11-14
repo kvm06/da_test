@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% block title %} Create new account {% endblock %}
+{% load crispy_forms_tags %}
 
 {% block content %}
 <div>
@@ -10,7 +11,7 @@
             <p>Введите следующую информацию для создания аккаунта</p>
             <form method="POST" enctype="multipart/form-data">
                 {% csrf_token %}
-                <p>{{ form.as_p}}</p>
+                {{ form | crispy }}
                 <button type="submit" name="button">Создать аккаунт</button>
             </form>
         </div>

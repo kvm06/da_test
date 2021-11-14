@@ -20,8 +20,8 @@ from django.conf.urls.static import static
 from users import views
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('', views.index, name='index'),
-    path('api/', include('users.urls')),
-    path('api/', include('products.urls')),
-] + static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)
+                  path('admin/', admin.site.urls),
+                  path('', views.index, name='index'),
+                  path('api/', include('users.urls')),
+                  path('api/', include('products.urls')),
+              ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

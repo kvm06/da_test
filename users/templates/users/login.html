@@ -1,11 +1,12 @@
 {% extends 'base.html' %}
 {% block title %} Авторизация {% endblock %}
+{% load crispy_forms_tags %}
 
 {% block content %}
 <div>
     <form method="POST">
         {% csrf_token %}
-        <p>{{ form }}</p>
+        {{ form | crispy }}
         <button type="submit">Войти</button>
     </form>
 </div>

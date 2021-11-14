@@ -8,6 +8,10 @@
     <p>Добро пожаловать, {{ request.user.first_name }} {{request.user.last_name}}! </p>
     <a href="{% url 'user_profile' request.user.id %}">Мой профиль</a>
     <a href="{% url 'logout' %}">Выйти</a>
+    {% else %}
+    <a href="{% url 'login' %}">Вход</a>
+    <a href="{% url 'create' %}">Регистрация</a>
     {% endif %}
+    <a href="{% url 'users_list' %}">Все пользователи</a>
 </div>
 {% endblock %}

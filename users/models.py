@@ -1,6 +1,6 @@
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.db import models
-from django.contrib.auth.models import AbstractUser, BaseUserManager
+from django.contrib.auth.models import BaseUserManager
 from django.db.models.deletion import CASCADE
 
 GENDER = [
@@ -11,7 +11,6 @@ GENDER = [
 
 class CustomUserManager(BaseUserManager):
     def create_user(self, first_name, last_name, gender, email, password=None):
-        """Создает нового пользователя приложения с сохранением данных об email, имени, фамилии и поле"""
         if not email:
             raise ValueError('Users must have an email address')
 
@@ -27,7 +26,6 @@ class CustomUserManager(BaseUserManager):
         return user
 
     def create_superuser(self, first_name, last_name, gender, email, password=None):
-        """Создает суперпользователя приложения с сохранением данных об email, имени, фамилии и поле"""
         user = self.create_user(
             first_name,
             last_name,

@@ -1,12 +1,9 @@
-* {
-    margin: 0px;
-    padding: 0px;
-}
-.row {
+.users {
     display: flex;
     flex-wrap: wrap;
     width: 100%;
 }
 .profile_info {
     width: 15%;
+    margin: 20px;
 }

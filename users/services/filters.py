@@ -1,9 +1,6 @@
 import django_filters
 from users.models import CustomUser
-from django.contrib.gis.geoip2 import GeoIP2
-from django.core.exceptions import ObjectDoesNotExist
 from users.services.distance import get_distance
-import math
 
 
 class UserFilter(django_filters.FilterSet):
@@ -18,7 +15,7 @@ class UserFilter(django_filters.FilterSet):
     distance = django_filters.CharFilter(method='radius_filter', label="Пользователи рядом")
 
     def radius_filter(self, queryset, name, value):
-        """Фильтрация по радиусу. Фильтрует всех пользователей в радиусе <= value"""
+        """Find users in radius. Filter all users in radius <= value"""
         radius = int(value)
         lat, lng = self.request.user.lat, self.request.user.lng
         if lat and lng:
